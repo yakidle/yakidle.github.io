@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNote - 你的云端记事本</title>
+    <style>
+        /* --- 全局样式 --- */
+        :root {
+            --primary-color: #6366f1;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-color: #333;
+            --sidebar-bg: #f8f9fa;
+            --editor-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body, html { height: 100%; overflow: hidden; }
+
+        /* --- 封面页 (Landing Page) --- */
+        #landing-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-gradient);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; z-index: 100;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #landing-page.hidden {
+            opacity: 0; transform: scale(1.1); pointer-events: none;
+        }
+
+        .hero-title { font-size: 3.5rem; margin-bottom: 10px; font-weight: 700; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .hero-subtitle { font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9; }
+
+        .enter-btn {
+            padding: 15px 40px; font-size: 1.2rem; color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white; border-radius: 50px;
+            cursor: pointer; backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .enter-btn:hover {
+            background: white; color: var(--primary-color);
+            transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* --- 主应用界面 (App Interface) --- */
+        #app-interface {
+            display: none; /* 初始隐藏 */
+            height: 100%; width: 100%;
+            opacity: 0; transition: opacity 1s ease;
+        }
+
+        #app-interface.visible { display: flex; opacity: 1; }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 280px; background: var(--sidebar-bg);
+            border-right: 1px solid #e5e7eb;
+            display: flex; flex-direction: column;
+        }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #e5e7eb; }
+        .new-note-btn {
+            width: 100%; padding: 10px; background: var(--primary-color);
+            color: white; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: 600; transition: background 0.2s;
+        }
+        .new-note-btn:hover { background: #4f46e5; }
+
+        .note-list { flex: 1; overflow-y: auto; list-style: none; }
+        .note-item {
+            padding: 15px 20px; border-bottom: 1px solid #eee;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .note-item:hover { background: #eef2ff; }
+        .note-item.active { background: #e0e7ff; border-left: 4px solid var(--primary-color); }
+        .note-title { font-weight: 600; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .note-preview { font-size: 0.85rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* 编辑区 */
+        .editor-area { flex: 1; display: flex; flex-direction: column; background: var(--editor-bg); }
+        .editor-header {
+            padding: 15px 30px; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        #note-title-input {
+            font-size: 1.5rem; border: none; outline: none; width: 70%; font-weight: 700; color: #333;
+        }
+        .save-status { font-size: 0.8rem; color: #10b981; }
+        
+        #note-content {
+            flex: 1; padding: 30px; border: none; outline: none;
+            font-size: 1.1rem; line-height: 1.6; color: #444; resize: none;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .sidebar { width: 80px; }
+            .sidebar-header h3, .note-preview, .new-note-btn span { display: none; }
+            .hero-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 封面页 -->
+    <div id="landing-page">
+        <h1 class="hero-title">CloudNote</h1>
+        <p class="hero-subtitle">记录灵感，捕捉生活</p>
+        <button class="enter-btn" onclick="enterApp()">进入记事本</button>
+    </div>
+
+    <!-- 2. 主应用界面 -->
+    <div id="app-interface">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-note-btn" onclick="createNewNote()">+ 新建笔记</button>
+            </div>
+            <ul class="note-list" id="noteList">
+                <!-- 笔记列表将通过 JS 动态生成 -->
+            </ul>
+        </div>
+
+        <!-- 编辑区 -->
+        <div class="editor-area">
+            <div class="editor-header">
+                <input type="text" id="note-title-input" placeholder="无标题笔记" oninput="updateCurrentNote()">
+                <span class="save-status" id="saveStatus">已保存</span>
+            </div>
+            <textarea id="note-content" placeholder="开始书写..." oninput="updateCurrentNote()"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // --- 逻辑控制 ---
+        
+        // 1. 进入应用动画
+        function enterApp() {
+            const landing = document.getElementById('landing-page');
+            const app = document.getElementById('app-interface');
+            
+            landing.classList.add('hidden');
+            
+            setTimeout(() => {
+                app.classList.add('visible');
+                loadNotes(); // 加载笔记
+            }, 600);
+        }
+
+        // 2. 数据管理 (使用 localStorage 模拟数据库)
+        let notes = JSON.parse(localStorage.getItem('myNotes')) || [];
+        let currentNoteId = null;
+
+        // 初始化：如果没有笔记，创建一个默认的
+        if (notes.length === 0) {
+            notes.push({
+                id: Date.now(),
+                title: '欢迎使用 CloudNote',
+                content: '这是你的第一条笔记，试着编辑它吧！\n支持自动保存。',
+                updated: new Date().toLocaleString()
+            });
+            saveNotes();
+        }
+
+        // 3. 渲染笔记列表
+        function renderNoteList() {
+            const listEl = document.getElementById('noteList');
+            listEl.innerHTML = '';
+            
+            // 按时间倒序排列
+            notes.sort((a, b) => b.id - a.id).forEach(note => {
+                const li = document.createElement('li');
+                li.className = `note-item ${note.id === currentNoteId ? 'active' : ''}`;
+                li.onclick = () => loadNote(note.id);
+                li.innerHTML = `
+                    <div class="note-title">${note.title || '无标题'}</div>
+                    <div class="note-preview">${note.content.substring(0, 30) || '无内容'}...</div>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        // 4. 加载特定笔记到编辑区
+        function loadNote(id) {
+            currentNoteId = id;
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('note-title-input').value = note.title;
+                document.getElementById('note-content').value = note.content;
+                renderNoteList(); // 更新高亮状态
+            }
+        }
+
+        // 5. 更新当前笔记 (自动保存)
+        function updateCurrentNote() {
+            const title = document.getElementById('note-title-input').value;
+            const content = document.getElementById('note-content').value;
+            const status = document.getElementById('saveStatus');
+
+            const noteIndex = notes.findIndex(n => n.id === currentNoteId);
+            if (noteIndex !== -1) {
+                notes[noteIndex].title = title;
+                notes[noteIndex].content = content;
+                notes[noteIndex].updated = new Date().toLocaleString();
+                saveNotes();
+                
+                // 防抖更新列表预览，避免输入时列表跳动
+                clearTimeout(window.renderTimeout);
+                window.renderTimeout = setTimeout(renderNoteList, 500);
+                
+                status.innerText = '保存中...';
+                setTimeout(() => status.innerText = '已保存', 500);
+            }
+        }
+
+        // 6. 新建笔记
+        function createNewNote() {
+            const newNote = {
+                id: Date.now(),
+                title: '',
+                content: '',
+                updated: new Date().toLocaleString()
+            };
+            notes.unshift(newNote); // 添加到开头
+            currentNoteId = newNote.id;
+            saveNotes();
+            loadNote(newNote.id);
+            document.getElementById('note-title-input').focus();
+        }
+
+        // 7. 持久化存储
+        function saveNotes() {
+            localStorage.setItem('myNotes', JSON.stringify(notes));
+        }
+
+        function loadNotes() {
+            // 确保有选中的笔记
+            if (!currentNoteId && notes.length > 0) {
+                currentNoteId = notes[0].id;
+            }
+            loadNote(currentNoteId);
+            renderNoteList();
+        }
+    </script>
+</body>
+</html>
