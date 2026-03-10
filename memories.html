@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择回忆类型 · 时光入口</title>
+    <style>
+        /* 全局重置与基础字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f9f3e8 0%, #ffe9d6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 装饰性元素：飘浮的圆点 */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(200, 160, 120, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 主容器 */
+        .memory-container {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        /* 顶部返回链接 */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            color: #7d6b58;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .back-link:hover {
+            color: #4a3b2c;
+            transform: translateX(-5px);
+        }
+
+        /* 标题 */
+        .section-title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 500;
+            color: #4a3b2c;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 5px rgba(255, 235, 200, 0.8);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #7d6b58;
+            text-align: center;
+            margin-bottom: 3.5rem;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        /* 按钮容器 */
+        .buttons-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 选项卡片按钮 */
+        .memory-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 245, 235, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            color: #4a3b2c;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+
+        /* 按钮动画延迟 */
+        .memory-option:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .memory-option:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        /* 按钮内部光效背景 */
+        .memory-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+            z-index: 1;
+        }
+
+        .memory-option:hover::before {
+            left: 100%;
+        }
+
+        /* 图标 */
+        .option-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            transition: transform 0.3s ease;
+            z-index: 2;
+            position: relative;
+        }
+
+        .memory-option:hover .option-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        /* 选项标题 */
+        .option-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+            z-index: 2;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .memory-option:hover .option-title {
+            color: #b28b6f;
+        }
+
+        /* 选项描述 */
+        .option-desc {
+            font-size: 0.95rem;
+            color: #7d6b58;
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .memory-option:hover .option-desc {
+            opacity: 1;
+        }
+
+        /* 悬停效果 */
+        .memory-option:hover {
+            background: rgba(255, 245, 235, 0.95);
+            border-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 
+                0 20px 50px rgba(140, 90, 50, 0.25),
+                0 0 40px rgba(200, 160, 120, 0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .memory-option:active {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(140, 90, 50, 0.2);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .buttons-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .memory-option {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .option-icon {
+                font-size: 3rem;
+            }
+
+            .option-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 关键帧动画 */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 装饰线 */
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c9ad8e, transparent);
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="memory-container">
+        <a href="index.html" class="back-link">← 返回</a>
+
+        <h1 class="section-title">选择回忆类型</h1>
+        <p class="section-subtitle">✦ 打开属于你的故事 ✦</p>
+
+        <div class="buttons-container">
+            <!-- 人物回忆 -->
+            <a href="#" class="memory-option" id="personBtn">
+                <div class="option-icon">👥</div>
+                <div class="option-title">人物轶事</div>
+                <div class="divider"></div>
+                <div class="option-desc">记录生命中那些重要的人</div>
+            </a>
+
+            <!-- 事件回忆 -->
+            <a href="#" class="memory-option" id="eventBtn">
+                <div class="option-icon">⭐</div>
+                <div class="option-title">时代篇章</div>
+                <div class="divider"></div>
+                <div class="option-desc">铭刻心间的重要时刻</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const personBtn = document.getElementById('personBtn');
+            const eventBtn = document.getElementById('eventBtn');
+
+            personBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('人物回忆页面（待实现）');
+                // window.location.href = 'people.html';
+            });
+
+            eventBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('重要事件页面（待实现）');
+                // window.location.href = 'events.html';
+            });
+        })();
+    </script>
+</body>
+</html>
