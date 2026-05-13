@@ -1,1 +1,44 @@
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>智能论文讲解演示</title>
+  <style>
+    body { max-width: 600px; margin: 40px auto; font-family: "微软雅黑",sans-serif; }
+    h2 { color: #174894; }
+    #result { background: #f7fafd; border-radius: 6px; margin-top: 18px; padding: 16px; min-height: 80px; }
+    .ppt-link { display:block; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <h2>上传论文PDF，智能解析并生成PPT</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="pdf" accept="application/pdf" required>
+    <button type="submit">上传并分析</button>
+  </form>
+  <div id="result"></div>
+<script>
+document.getElementById('uploadForm').onsubmit = async function(e) {
+  e.preventDefault();
+  let formData = new FormData(this);
+  document.getElementById('result').textContent = '正在上传与分析，请稍等...';
+  try {
+    let res = await fetch('https://YOUR_BACKEND_API/upload', { // 替换为你部署的后端API地址
+      method: 'POST', body: formData
+    });
+    let data = await res.json();
+    if(data.success) {
+      document.getElementById('result').innerHTML = 
+        '论文类型：' + data.paper_type + '<br><b>讲解摘要：</b><br>' +
+        data.summary.replace(/\n/g,'<br>') +
+        (data.ppt_url?('<br><a class="ppt-link" href="'+data.ppt_url+'" download>下载生成的PPT</a>'):'');
+    } else {
+      document.getElementById('result').textContent = '出错：'+data.message;
+    }
+  } catch(err) {
+    document.getElementById('result').textContent = '网络/服务端错误：'+err;
+  }
+}
+</script>
+</body>
+</html>
