@@ -5,42 +5,52 @@
   <title>智能论文讲解演示</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    html {
+      font-size: 18px;
+    }
     body {
       background: linear-gradient(135deg,#eaf6ff,#fef6ff 60%,#f8edfd);
       min-height: 100vh;
       margin: 0;
       font-family: "微软雅黑", "Helvetica Neue", Arial, sans-serif;
+      line-height: 2;
     }
     .container {
       background: white;
       box-shadow: 0 12px 32px 0 rgba(91,114,255,0.13);
-      border-radius: 18px;
-      max-width: 700px;
-      margin: 70px auto 0 auto;
-      padding: 64px 48px 48px 48px;
+      border-radius: 22px;
+      max-width: 750px;
+      margin: 80px auto 0 auto;
+      padding: 68px 60px 54px 60px;
       text-align: center;
       position: relative;
     }
     h2 {
       color: #156de7;
-      margin: 0 0 36px 0;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
+      margin: 0 0 44px 0;
+      font-size: 2.5rem;
+      letter-spacing: 2.5px;
+      font-weight: bold;
     }
     form {
-      margin-bottom: 36px;
+      margin-bottom: 48px;
     }
     .upload-zone {
-      padding: 38px 20px;
-      border: 2px dashed #c5d8fa;
-      background: #f6fafd;
-      border-radius: 14px;
+      padding: 48px 30px;
+      border: 2.5px dashed #b8d4fa;
+      background: #f5faff;
+      border-radius: 16px;
       cursor: pointer;
-      margin-bottom: 30px;
+      margin-bottom: 38px;
       transition: border-color 0.2s, background 0.2s;
       color: #3977ca;
-      font-size: 18px;
-      line-height: 1.6;
+      font-size: 1.18rem;
+      line-height: 1.9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70px;
+      min-width: 220px;
     }
     .upload-zone.dragover {
       background: #eaf4fb;
@@ -49,61 +59,81 @@
     }
     input[type=file] { display:none; }
     button {
-      margin-top: 12px;
-      width: 60%;
-      min-width: 160px;
-      padding: 13px 0;
+      margin-top: 22px;
+      width: 65%;
+      min-width: 180px;
+      padding: 15px 0;
       background: linear-gradient(90deg, #418bfa 60%, #a469ec 100%);
       border: none;
-      border-radius: 10px;
+      border-radius: 13px;
       color: #fff;
-      font-size: 18px;
+      font-size: 1.15rem;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 2px 10px #efefefb7;
       transition: background 0.2s, transform 0.1s;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
+      margin-bottom: 16px;
+      letter-spacing: 1.1px;
     }
     button:hover{
       background:linear-gradient(93deg,#2662d1 0,#7859f4 100%);
-      transform: scale(1.04);
+      transform: scale(1.045);
     }
     #result {
-      margin-top: 38px;
-      padding: 38px 20px;
-      min-height: 90px;
+      margin-top: 52px;
+      padding: 44px 26px;
+      min-height: 110px;
       background: #fafdff;
-      border: 1.8px solid #e4e9f9;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px 0 rgba(91,114,255,0.06);
+      border: 2.2px solid #e4e9f9;
+      border-radius: 16px;
+      box-shadow: 0 3px 16px 0 rgba(91,114,255,0.06);
       text-align: left;
-      font-size: 18px;
-      line-height: 2;
+      font-size: 1.12rem;
+      line-height: 2.05;
       word-break: break-all;
       display: none;
-      color: #333;
+      color: #2b2b2b;
+      letter-spacing: .5px;
     }
     #result.active { display:block; }
-    .result-title { font-weight: bold; color: #2863b6; margin-bottom: 10px; display: inline-block;}
+    .result-title {
+      font-weight: bold;
+      color: #2863b6;
+      margin-bottom: 16px;
+      display: block;
+      font-size: 1.06em;
+      letter-spacing: 1px;
+    }
     .ppt-link {
-      display:inline-block;
-      margin-top:24px;
-      padding:12px 36px;
-      border-radius:7px;
-      background:linear-gradient(90deg,#3a86ff 0,#be7afa 100%);
-      color:#fff;font-size:18px;text-decoration:none;font-weight:500;
-      box-shadow: 0 1px 6px #8383aa21;
+      display: inline-block;
+      margin-top: 38px;
+      padding: 15px 40px;
+      border-radius: 9px;
+      background: linear-gradient(90deg,#3a86ff 0,#be7afa 100%);
+      color: #fff;
+      font-size: 1.09rem;
+      text-decoration: none;
+      font-weight: 500;
+      box-shadow: 0 1px 8px #8383aa21;
       transition: background .15s;
+      letter-spacing: .4px;
     }
     .ppt-link:hover{background:linear-gradient(90deg,#1d46af 0,#8436ba 100%);}
-    .error-txt { color: #e40c5b; font-weight: bold; }
-    .success-txt{ color: #18813b; font-weight: bold; }
-    @media (max-width:800px){
-      .container { max-width:95vw;padding:10vw 4vw 9vw 4vw;}
+    .error-txt { color: #e40c5b; font-weight: bold; font-size: 1.04em; }
+    .success-txt{ color: #18813b; font-weight: bold; font-size: 1.04em; }
+    @media (max-width:900px){
+      .container{max-width:98vw;padding:6vw 3vw 11vw 3vw;}
+      h2{font-size:2.15rem;}
+      .upload-zone{padding: 8vw 2vw;}
+      button{width:93%;}
+      #result{padding:7vw 3vw;}
+    }
+    @media (max-width:600px){
+      .container{padding:4vw 2vw 7vw 2vw;}
+      h2{font-size:1.34rem;padding-bottom:8px;}
+      .upload-zone{padding:7vw 2vw;}
       #result{padding:5vw 2vw;}
-      button{width:90%;}
-      .upload-zone {padding: 8vw 1vw;}
+      button{width:98%;font-size:1em;padding:12px 0;}
     }
   </style>
 </head>
@@ -123,7 +153,9 @@
 const uploadZone = document.getElementById('drop_zone');
 const fileInput = document.getElementById('pdfInput');
 const fileLabel = document.getElementById('fileLabel');
-function updateLabel(name){ fileLabel.textContent = name? ('已选：' + name) : '拖拽或点击此处上传 PDF 论文文件'; }
+function updateLabel(name){
+  fileLabel.textContent = name ? ('已选：' + name) : '拖拽或点击此处上传 PDF 论文文件';
+}
 uploadZone.onclick = ()=>fileInput.click();
 fileInput.onchange = ()=>updateLabel(fileInput.files[0]?fileInput.files[0].name:'');
 uploadZone.ondragover = e => {e.preventDefault();uploadZone.classList.add('dragover');};
@@ -155,8 +187,8 @@ document.getElementById('uploadForm').onsubmit = async function(e) {
     let data = await res.json();
     if(data.success) {
       resultBox.innerHTML =
-        '<div class="result-title">论文类型：</div>' + (data.paper_type||'未知') +
-        '<div style="height:14px"></div><div class="result-title">讲解摘要：</div>' +
+        '<span class="result-title">论文类型：</span>' + (data.paper_type||'未知') +
+        '<div style="height:16px"></div><span class="result-title">讲解摘要：</span>' +
         (data.summary?data.summary.replace(/\\n/g,'<br>'):'无') +
         (data.ppt_url
           ? ('<br><a class="ppt-link" href="'+data.ppt_url+'" download target="_blank">下载生成的PPT</a>')
