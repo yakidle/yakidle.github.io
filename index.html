@@ -5,19 +5,15 @@
   <title>智能论文讲解演示</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    html {
-      font-size: 18px;
-    }
+    html { font-size: 18px; }
     body {
       background: linear-gradient(135deg,#eaf6ff,#fef6ff 60%,#f8edfd);
-      min-height: 100vh;
-      margin: 0;
+      min-height: 100vh; margin: 0;
       font-family: "微软雅黑", "Helvetica Neue", Arial, sans-serif;
       line-height: 2;
     }
     .container {
-      background: white;
-      box-shadow: 0 12px 32px 0 rgba(91,114,255,0.13);
+      background: white; box-shadow: 0 12px 32px 0 rgba(91,114,255,0.13);
       border-radius: 22px;
       max-width: 750px;
       margin: 80px auto 0 auto;
@@ -26,115 +22,52 @@
       position: relative;
     }
     h2 {
-      color: #156de7;
-      margin: 0 0 44px 0;
-      font-size: 2.5rem;
-      letter-spacing: 2.5px;
-      font-weight: bold;
+      color: #156de7; margin: 0 0 44px 0; font-size: 2.5rem;
+      letter-spacing: 2.5px; font-weight: bold;
     }
-    form {
-      margin-bottom: 48px;
-    }
+    form { margin-bottom: 34px; }
     .upload-zone {
-      padding: 48px 30px;
-      border: 2.5px dashed #b8d4fa;
-      background: #f5faff;
-      border-radius: 16px;
-      cursor: pointer;
-      margin-bottom: 38px;
+      padding: 48px 30px; border: 2.5px dashed #b8d4fa; background: #f5faff;
+      border-radius: 16px; cursor: pointer; margin-bottom: 38px;
       transition: border-color 0.2s, background 0.2s;
-      color: #3977ca;
-      font-size: 1.18rem;
-      line-height: 1.9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 70px;
-      min-width: 220px;
+      color: #3977ca; font-size: 1.18rem; line-height: 1.9;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 70px; min-width: 220px;
     }
     .upload-zone.dragover {
-      background: #eaf4fb;
-      border-color: #6ea6ff;
-      color: #2a55b1;
+      background: #eaf4fb; border-color: #6ea6ff; color: #2a55b1;
     }
     input[type=file] { display:none; }
     button {
-      margin-top: 22px;
-      width: 65%;
-      min-width: 180px;
-      padding: 15px 0;
+      margin-top: 20px; width: 65%; min-width: 180px; padding: 15px 0;
       background: linear-gradient(90deg, #418bfa 60%, #a469ec 100%);
-      border: none;
-      border-radius: 13px;
-      color: #fff;
-      font-size: 1.15rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 2px 10px #efefefb7;
-      transition: background 0.2s, transform 0.1s;
-      margin-bottom: 16px;
+      border: none; border-radius: 13px; color: #fff; font-size: 1.15rem;
+      font-weight: bold; cursor: pointer; box-shadow: 0 2px 10px #efefefb7;
+      transition: background 0.2s, transform 0.1s; margin-bottom: 10px;
       letter-spacing: 1.1px;
     }
     button:hover{
-      background:linear-gradient(93deg,#2662d1 0,#7859f4 100%);
-      transform: scale(1.045);
-    }
+      background:linear-gradient(93deg,#2662d1 0,#7859f4 100%);transform: scale(1.045);}
     #result {
-      margin-top: 52px;
-      padding: 44px 26px;
-      min-height: 110px;
-      background: #fafdff;
-      border: 2.2px solid #e4e9f9;
-      border-radius: 16px;
+      margin-top: 40px; padding: 32px 20px; min-height: 110px; background: #fafdff;
+      border: 2.2px solid #e4e9f9; border-radius: 16px;
       box-shadow: 0 3px 16px 0 rgba(91,114,255,0.06);
-      text-align: left;
-      font-size: 1.12rem;
-      line-height: 2.05;
-      word-break: break-all;
-      display: none;
-      color: #2b2b2b;
-      letter-spacing: .5px;
+      text-align: left; font-size: 1.12rem; line-height: 2.05;
+      word-break: break-all; display: none; color: #2b2b2b; letter-spacing: .5px;
     }
     #result.active { display:block; }
-    .result-title {
-      font-weight: bold;
-      color: #2863b6;
-      margin-bottom: 16px;
-      display: block;
-      font-size: 1.06em;
-      letter-spacing: 1px;
-    }
-    .ppt-link {
-      display: inline-block;
-      margin-top: 38px;
-      padding: 15px 40px;
-      border-radius: 9px;
-      background: linear-gradient(90deg,#3a86ff 0,#be7afa 100%);
-      color: #fff;
-      font-size: 1.09rem;
-      text-decoration: none;
-      font-weight: 500;
-      box-shadow: 0 1px 8px #8383aa21;
-      transition: background .15s;
-      letter-spacing: .4px;
-    }
+    #model-ask-box {margin: 46px 0 16px 0; padding: 32px 22px; background: #f9f8fc; border-radius: 16px; text-align: left; box-shadow: 0 1px 5px #b0a3c21c;}
+    #model-q {width:70%; min-width:120px; padding:12px 10px; border:1.5px solid #94a0ba; border-radius:8px;}
+    #ask-btn {padding:12px 28px; margin-left:16px; border-radius:8px; border:none; background:linear-gradient(90deg,#4a90fa 60%, #c849ec 100%); color:#fff; font-weight:500; cursor:pointer; }
+    #ask-btn:hover{background:linear-gradient(87deg,#1252d1 0,#7837f4 100%);}
+    #model-answer {margin-top:22px; color:#2056a7; font-weight:bold; letter-spacing:0.5px;}
+    .result-title {font-weight: bold; color: #2863b6; margin-bottom: 12px; display: block; font-size: 1.06em; letter-spacing: 1px;}
+    .ppt-link {display:inline-block;margin-top:28px;padding:15px 40px;border-radius:9px;background:linear-gradient(90deg,#3a86ff 0,#be7afa 100%);color:#fff;font-size:1.09rem;text-decoration:none;font-weight:500;box-shadow:0 1px 8px #8383aa21;transition:background .15s;letter-spacing:.4px;}
     .ppt-link:hover{background:linear-gradient(90deg,#1d46af 0,#8436ba 100%);}
     .error-txt { color: #e40c5b; font-weight: bold; font-size: 1.04em; }
     .success-txt{ color: #18813b; font-weight: bold; font-size: 1.04em; }
-    @media (max-width:900px){
-      .container{max-width:98vw;padding:6vw 3vw 11vw 3vw;}
-      h2{font-size:2.15rem;}
-      .upload-zone{padding: 8vw 2vw;}
-      button{width:93%;}
-      #result{padding:7vw 3vw;}
-    }
-    @media (max-width:600px){
-      .container{padding:4vw 2vw 7vw 2vw;}
-      h2{font-size:1.34rem;padding-bottom:8px;}
-      .upload-zone{padding:7vw 2vw;}
-      #result{padding:5vw 2vw;}
-      button{width:98%;font-size:1em;padding:12px 0;}
-    }
+    @media (max-width:900px){.container{max-width:98vw;padding:6vw 3vw 11vw 3vw;}h2{font-size:2.15rem;}.upload-zone{padding: 8vw 2vw;}button{width:93%;}#result{padding:7vw 3vw;}}
+    @media (max-width:600px){.container{padding:4vw 2vw 7vw 2vw;}h2{font-size:1.34rem;padding-bottom:8px;}.upload-zone{padding:7vw 2vw;}#result{padding:5vw 2vw;}button{width:98%;font-size:1em;padding:12px 0;}}
   </style>
 </head>
 <body>
@@ -148,6 +81,12 @@
       <button type="submit">上传并分析</button>
     </form>
     <div id="result"></div>
+    <div id="model-ask-box">
+      <div style="font-weight:bold;color:#3747c7;margin-bottom:9px;">直接向本地大模型提问</div>
+      <input type="text" id="model-q" placeholder="请输入你的问题..." autocomplete="off"/>
+      <button id="ask-btn">发送</button>
+      <div id="model-answer"></div>
+    </div>
   </div>
 <script>
 const uploadZone = document.getElementById('drop_zone');
@@ -181,7 +120,7 @@ document.getElementById('uploadForm').onsubmit = async function(e) {
   resultBox.classList.add('active');
   resultBox.innerHTML = '<span class="success-txt">正在上传与分析，请稍等 ...</span>';
   try {
-    let res = await fetch('https://YOUR_BACKEND_API/upload', { // << 请替换为你的后端API
+    let res = await fetch('http://localhost:8000/upload', {
       method: 'POST', body: formData
     });
     let data = await res.json();
@@ -189,7 +128,7 @@ document.getElementById('uploadForm').onsubmit = async function(e) {
       resultBox.innerHTML =
         '<span class="result-title">论文类型：</span>' + (data.paper_type||'未知') +
         '<div style="height:16px"></div><span class="result-title">讲解摘要：</span>' +
-        (data.summary?data.summary.replace(/\\n/g,'<br>'):'无') +
+        (data.summary?data.summary.replace(/\n/g,'<br>'):'无') +
         (data.ppt_url
           ? ('<br><a class="ppt-link" href="'+data.ppt_url+'" download target="_blank">下载生成的PPT</a>')
           : ''
@@ -199,6 +138,31 @@ document.getElementById('uploadForm').onsubmit = async function(e) {
     }
   } catch(err) {
     resultBox.innerHTML = '<span class="error-txt">网络/服务端错误：</span>'+err;
+  }
+};
+document.getElementById('ask-btn').onclick = async function(){
+  const q = document.getElementById('model-q').value;
+  const answerBox = document.getElementById('model-answer');
+  answerBox.innerHTML = '';
+  if(!q.trim()){
+    answerBox.innerHTML = '<span class="error-txt">请输入问题。</span>';
+    return;
+  }
+  answerBox.innerHTML = '<span class="success-txt">模型推理中，请稍候...</span>';
+  try{
+    let res = await fetch('http://localhost:8000/model', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({input: q})
+    });
+    let data = await res.json();
+    if(data && data.result){
+      answerBox.innerHTML = '<span style="color:#166472;"><b>模型回复：</b></span><br>' + data.result;
+    }else{
+      answerBox.innerHTML = '<span class="error-txt">模型无响应，或后端未实现 /model 路由。</span>';
+    }
+  }catch(e){
+    answerBox.innerHTML = '<span class="error-txt">请求失败：'+e+'</span>';
   }
 };
 </script>
