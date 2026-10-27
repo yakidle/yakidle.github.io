@@ -14,6 +14,11 @@
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 .color-limit{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 0;margin:17px 0}.color-limit .field-top{margin:18px 0 15px}.color-limit .field-hint{margin-top:10px}.color-limit .switch-row small{font-size:9px}
+
+/* Image adjustment controls */
+.adjustment-panel summary{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#7f8e73;list-style:none;cursor:pointer}.adjustment-panel summary::-webkit-details-marker{display:none}.adjustment-panel[open] summary>span{transform:rotate(180deg)}.adjustment-control{margin-top:22px}.adjustment-control .field-top{margin-bottom:13px;font-size:11px}.adjustment-control output{min-width:39px;text-align:right;font-size:10px;font-variant-numeric:tabular-nums;color:#6d835d}.adjustment-control .range-labels{font-size:8px}.adjustment-preview-button{width:100%;margin-top:23px;font-size:10px}.adjustment-hint{margin-top:11px;line-height:1.9}.adjustment-range.hue-range{background:linear-gradient(90deg,#8b9e82,#8aa7a1,#8e98b0,#b594a7,#bb9e83,#a8ad7c,#8b9e82)}#resetAdjustments:disabled{opacity:.4;cursor:default}
+@media(min-width:901px){.result-area{position:sticky;top:18px}}
+@media(max-width:650px){.result-toolbar{flex-wrap:wrap}.result-toolbar .tabs{flex:1}.result-toolbar .tabs button{flex:1;padding:8px 10px}.view-tools{margin-left:auto}.adjustment-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}.adjustment-control:last-child{grid-column:1/-1}.adjustment-control .range-labels{font-size:9px}.adjustment-hint{font-size:10px}}
 </style>
 </head>
 <body>
@@ -30,7 +35,21 @@
         <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp,image/avif" hidden>
         <div class="file-info"><span id="fileName">小橘的花园 · 示例图片</span><span id="sourceSize">720 × 720</span></div>
       </section>
-      <section class="control-section"><div class="section-heading"><h2><span class="step">02</span> 设置图纸</h2><span class="micro-label">每格一颗豆</span></div>
+      <section class="control-section adjustment-section" aria-label="图像调节">
+        <div class="section-heading"><h2><span class="step">02</span> 图像调节</h2><button id="resetAdjustments" class="text-button small" disabled>重置全部</button></div>
+        <details class="adjustment-panel" open><summary>调节画面颜色<span aria-hidden="true">⌄</span></summary>
+          <div class="adjustment-sliders">
+            <div class="adjustment-control"><div class="field-top"><label for="adj-brightness">亮度</label><output id="adj-brightness-value" for="adj-brightness">0</output></div><input id="adj-brightness" class="adjustment-range " type="range" min="-100" max="100" value="0" step="1"><div class="range-labels"><span>更暗</span><span>更亮</span></div></div>
+            <div class="adjustment-control"><div class="field-top"><label for="adj-contrast">对比度</label><output id="adj-contrast-value" for="adj-contrast">0</output></div><input id="adj-contrast" class="adjustment-range " type="range" min="-100" max="100" value="0" step="1"><div class="range-labels"><span>更柔和</span><span>更分明</span></div></div>
+            <div class="adjustment-control"><div class="field-top"><label for="adj-saturation">饱和度</label><output id="adj-saturation-value" for="adj-saturation">0</output></div><input id="adj-saturation" class="adjustment-range " type="range" min="-100" max="100" value="0" step="1"><div class="range-labels"><span>黑白</span><span>更鲜艳</span></div></div>
+            <div class="adjustment-control"><div class="field-top"><label for="adj-hue">色调</label><output id="adj-hue-value" for="adj-hue">0°</output></div><input id="adj-hue" class="adjustment-range hue-range" type="range" min="-180" max="180" value="0" step="1"><div class="range-labels"><span>−180°</span><span>+180°</span></div></div>
+            <div class="adjustment-control"><div class="field-top"><label for="adj-temperature">色温</label><output id="adj-temperature-value" for="adj-temperature">0</output></div><input id="adj-temperature" class="adjustment-range " type="range" min="-100" max="100" value="0" step="1"><div class="range-labels"><span>更冷</span><span>更暖</span></div></div>
+          </div>
+          <button id="viewAdjustments" class="button secondary adjustment-preview-button">查看调整后的图片 ↗</button>
+          <p class="field-hint adjustment-hint">先调色，再生成图纸。原图保留，所有参数均可重置；白底留空位置不受调色影响。</p>
+        </details>
+      </section>
+      <section class="control-section"><div class="section-heading"><h2><span class="step">03</span> 设置图纸</h2><span class="micro-label">每格一颗豆</span></div>
         <div class="field-top"><label for="resolution">长边豆子数</label><div class="number-wrap"><input id="resolutionNumber" type="number" min="8" max="300" value="80" aria-label="长边豆子数量"><span>颗</span></div></div>
         <input id="resolution" type="range" min="8" max="300" value="80" aria-label="长边豆子数滑块">
         <div class="range-labels"><span>更小巧</span><span>更多细节</span></div>
@@ -42,15 +61,15 @@
         <div class="field-top bead-size"><label for="beadSize">豆子间距</label><select id="beadSize"><option value="2.6">2.6 mm</option><option value="5">5 mm</option><option value="2.5">2.5 mm</option></select></div>
         <p class="field-hint">按拼板孔间距估算成品大小，可按实际规格调整。</p>
       </section>
-      <section class="control-section background-section"><div class="section-heading"><h2><span class="step">03</span> 处理留白</h2></div>
+      <section class="control-section background-section"><div class="section-heading"><h2><span class="step">04</span> 处理留白</h2></div>
         <label class="switch-row"><span><strong>外围白底留空</strong><small>只识别与图片边缘连通的白底</small></span><input id="removeWhite" type="checkbox" role="switch" checked><span class="switch" aria-hidden="true"></span></label>
         <label class="checkbox-row"><input id="cropWhite" type="checkbox"><span>裁掉外围空白，让主体铺满图纸</span></label>
         <details class="advanced"><summary>背景识别设置 <span>＋</span></summary><div class="advanced-body"><label for="whiteTolerance">白底容差 <output id="toleranceOutput">10</output></label><input id="whiteTolerance" type="range" min="0" max="40" value="10"><p>容差越大，越接近白色的背景也会留空。与背景相连的白色主体可能一并留空。</p><label for="coverage">一格至少包含多少主体 <output id="coverageOutput">50%</output></label><input id="coverage" type="range" min="1" max="100" value="50"><p>不足这个比例的格子留空，影响图案边缘。</p></div></details>
       </section>
-      <div class="method-note"><span aria-hidden="true">▦</span><p><strong>就按你选的格数，平均池化。</strong><br>每格计算 RGB 均值，再匹配所选色卡。<br>不加滤镜，不额外修改画风。</p></div>
+      <div class="method-note"><span aria-hidden="true">▦</span><p><strong>就按你选的格数，平均池化。</strong><br>每格计算 RGB 均值，再匹配所选色卡。<br>可先调节图像颜色，再生成图纸。</p></div>
     </aside>
     <section class="result-area" aria-label="图纸预览与下载">
-      <div class="result-toolbar"><div class="tabs" role="tablist" aria-label="查看方式"><button id="tabPreview" role="tab" aria-selected="true" data-view="preview">色块预览</button><button id="tabChart" role="tab" aria-selected="false" data-view="chart">色号图纸</button><button id="tabOriginal" role="tab" aria-selected="false" data-view="original">原图</button></div><div class="view-tools"><label class="grid-toggle"><input id="showGrid" type="checkbox" checked> 网格</label><span class="toolbar-divider"></span><button id="zoomOut" class="icon-button" aria-label="缩小">−</button><button id="fitBtn" class="fit-button" title="点击适应画布">适应</button><button id="zoomIn" class="icon-button" aria-label="放大">＋</button></div></div>
+      <div class="result-toolbar"><div class="tabs" role="tablist" aria-label="查看方式"><button id="tabPreview" role="tab" aria-selected="true" data-view="preview">色块预览</button><button id="tabChart" role="tab" aria-selected="false" data-view="chart">色号图纸</button><button id="tabOriginal" role="tab" aria-selected="false" data-view="original">原图</button><button id="tabAdjusted" role="tab" aria-selected="false" data-view="adjusted">调整后</button></div><div class="view-tools"><label class="grid-toggle"><input id="showGrid" type="checkbox" checked> 网格</label><span class="toolbar-divider"></span><button id="zoomOut" class="icon-button" aria-label="缩小">−</button><button id="fitBtn" class="fit-button" title="点击适应画布">适应</button><button id="zoomIn" class="icon-button" aria-label="放大">＋</button></div></div>
       <div class="stage" id="stage" tabindex="0" aria-label="图像画布，可滚动查看放大的图纸"><div class="canvas-wrap" id="canvasWrap"><canvas id="viewCanvas" role="img" aria-label="拼豆色块预览"></canvas></div><span class="stage-tag" id="stageTag">MARD · 221 色</span><div id="busy" class="busy" hidden><span></span>正在生成图纸…</div></div>
       <div class="canvas-status"><span><i class="status-dot"></i><span id="statusText" role="status" aria-live="polite">示例已就绪</span></span><span id="hoverText">移动到色块，查看坐标与色号</span></div>
       <div class="stats"><div><span>图纸格数</span><strong id="statGrid">80 <i>×</i> 80 <em>格</em></strong></div><div><span>实际用豆</span><strong id="statTotal">— <em>颗</em></strong></div><div><span>使用颜色</span><strong id="statColors">— <em>色</em></strong></div><div><span>预计成品</span><strong id="statSize">20.8 <i>×</i> 20.8 <em>cm</em></strong></div></div>
@@ -68,6 +87,65 @@ globalThis.BEAD_PALETTES = [{"id":"mard221","name":"MARD · 221 色","mm":2.6,"s
 globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright (c) 2026 HansBug\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this data and associated documentation files (the \"Data\"), to deal\nin the Data without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Data, and to permit persons to whom the Data is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Data.\n\nTHE DATA IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE DATA OR THE USE OR OTHER DEALINGS IN THE\nDATA.\n\n\nmaxcleme/beadcolors\nMIT License\n\nCopyright (c) 2020 maxcleme\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n";
 </script><script>(function initBeadCore(){
   'use strict';
+  // Work from the original pixels on every change. The original background mask
+  // is retained so darkening or recoloring cannot turn blank cells into beads.
+  function adjustImage(data,settings={},mask=null){
+    const limit=(value,min,max)=>Math.max(min,Math.min(max,Number(value)||0));
+    const brightness=limit(settings.brightness,-100,100)*1.275;
+    const contrastValue=limit(settings.contrast,-100,100);
+    const contrast=contrastValue>=0?1+contrastValue/50:1+contrastValue/100;
+    const saturation=1+limit(settings.saturation,-100,100)/100;
+    const hue=limit(settings.hue,-180,180)/60;
+    const temperature=limit(settings.temperature,-100,100)*.35;
+    if(!brightness&&contrast===1&&saturation===1&&!hue&&!temperature)return data;
+    const result=new Uint8ClampedArray(data.length);
+    const clamp=value=>Math.max(0,Math.min(255,value));
+    for(let i=0;i<data.length;i+=4){
+      result[i+3]=data[i+3];
+      if(data[i+3]===0||(mask&&mask[i/4])){result[i]=data[i];result[i+1]=data[i+1];result[i+2]=data[i+2];continue;}
+      let r=clamp((data[i]-127.5)*contrast+127.5+brightness+temperature);
+      let g=clamp((data[i+1]-127.5)*contrast+127.5+brightness+temperature*.12);
+      let b=clamp((data[i+2]-127.5)*contrast+127.5+brightness-temperature);
+      // HSV hue rotation preserves gray pixels and wraps through the full wheel.
+      if(hue){
+        const max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;
+        if(delta>0){
+          let h=max===r?(g-b)/delta:max===g?2+(b-r)/delta:4+(r-g)/delta;
+          h=((h+hue)%6+6)%6;
+          const x=delta*(1-Math.abs(h%2-1));
+          if(h<1){r=delta;g=x;b=0;}else if(h<2){r=x;g=delta;b=0;}
+          else if(h<3){r=0;g=delta;b=x;}else if(h<4){r=0;g=x;b=delta;}
+          else if(h<5){r=x;g=0;b=delta;}else{r=delta;g=0;b=x;}
+          r+=min;g+=min;b+=min;
+        }
+      }
+      const gray=r*.2126+g*.7152+b*.0722;
+      result[i]=clamp(gray+(r-gray)*saturation);
+      result[i+1]=clamp(gray+(g-gray)*saturation);
+      result[i+2]=clamp(gray+(b-gray)*saturation);
+    }
+    return result;
+  }
+  // A bounded preview keeps worker messages small; pooling uses the full image.
+  function adjustmentPreview(data,width,height,maxEdge=1200){
+    const scale=Math.min(1,maxEdge/Math.max(width,height));
+    const w=Math.max(1,Math.round(width*scale)),h=Math.max(1,Math.round(height*scale));
+    if(w===width&&h===height)return {width,height,data};
+    const pixels=new Uint8ClampedArray(w*h*4);
+    for(let y=0;y<h;y++){
+      const sy=Math.max(0,Math.min(height-1,(y+.5)*height/h-.5)),y0=Math.floor(sy),y1=Math.min(height-1,y0+1),fy=sy-y0;
+      for(let x=0;x<w;x++){
+        const sx=Math.max(0,Math.min(width-1,(x+.5)*width/w-.5)),x0=Math.floor(sx),x1=Math.min(width-1,x0+1),fx=sx-x0;
+        const indices=[(y0*width+x0)*4,(y0*width+x1)*4,(y1*width+x0)*4,(y1*width+x1)*4];
+        const weights=[(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy];
+        let alpha=0,r=0,g=0,b=0;
+        for(let j=0;j<4;j++){const p=indices[j],a=data[p+3]/255*weights[j];alpha+=a;r+=data[p]*a;g+=data[p+1]*a;b+=data[p+2]*a;}
+        const p=(y*w+x)*4;pixels[p+3]=alpha*255;
+        if(alpha>0){pixels[p]=r/alpha;pixels[p+1]=g/alpha;pixels[p+2]=b/alpha;}
+      }
+    }
+    return {width:w,height:h,data:pixels};
+  }
   function backgroundMask(data,width,height,removeWhite=true,threshold=245){
     const size=width*height, mask=new Uint8Array(size);
     if(!removeWhite){for(let i=0;i<size;i++)if(data[i*4+3]===0)mask[i]=1;return mask;}
@@ -167,7 +245,7 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
     for(let i=0;i<result.cells.length;i++)if(result.cells[i]>=0)result.cells[i]=remap[result.cells[i]];
     result.counts=counts;result.used=clusters.length;return result;
   }
-  const api={backgroundMask,foregroundBounds,gridSize,averagePool,mapPalette,rgbToLab,reduceColors};
+  const api={adjustImage,adjustmentPreview,backgroundMask,foregroundBounds,gridSize,averagePool,mapPalette,rgbToLab,reduceColors};
   api.workerSource='('+initBeadCore.toString()+')();';
   globalThis.BeadCore=api;
   if(typeof module!=='undefined')module.exports=api;
@@ -175,44 +253,63 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
 </script><script>(function(){
   'use strict';
   const $=id=>document.getElementById(id), palettes=globalThis.BEAD_PALETTES;
-  const state={source:null,sourceData:null,name:'小橘的花园',palette:palettes[0],result:null,view:'preview',zoom:1,highlight:-1,job:0,timer:null,worker:null,geometry:null,loading:0,pending:false};
+  const state={source:null,sourceData:null,adjustedSource:null,name:'小橘的花园',palette:palettes[0],result:null,view:'preview',zoom:1,highlight:-1,job:0,timer:null,worker:null,geometry:null,loading:0,pending:false};
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=n=>Number(n).toLocaleString('zh-CN');
+  const adjustmentIds=['brightness','contrast','saturation','hue','temperature'];
+  function adjustmentSettings(){return Object.fromEntries(adjustmentIds.map(id=>[id,+$('adj-'+id).value]));}
+  function updateAdjustmentLabels(){
+    for(const id of adjustmentIds){const input=$('adj-'+id),value=+input.value;$('adj-'+id+'-value').textContent=(value>0?'+':'')+value+(id==='hue'?'°':'');rangeFill(input);}
+    $('resetAdjustments').disabled=!adjustmentIds.some(id=>+$('adj-'+id).value!==0);
+  }
+  function resetAdjustments(recalculate=true){for(const id of adjustmentIds)$('adj-'+id).value=0;updateAdjustmentLabels();if(recalculate)schedule();}
+  function acceptConversion(result,preview){
+    state.result=result;state.highlight=-1;
+    if(preview){
+      const canvas=state.adjustedSource||document.createElement('canvas');canvas.width=preview.width;canvas.height=preview.height;
+      canvas.getContext('2d').putImageData(new ImageData(preview.data,preview.width,preview.height),0,0);state.adjustedSource=canvas;
+    }
+    busy(false);updateResults();
+  }
   let toastTimer;
   function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),4200);}
   function busy(value){state.pending=value;$('busy').hidden=!value;for(const id of ['exportPreview','exportChart','exportMaterials','exportCsv'])$(id).disabled=value||!state.result;}
   function rangeFill(el){el.style.setProperty('--range-fill',((+el.value-+el.min)/(+el.max-+el.min)*100)+'%');}
   function workerRuntime(){
-    let source=null,mask=null,maskKey='',pooled=null,poolKey='';
+    let source=null,mask=null,maskKey='',adjusted=null,adjustmentKey='',preview=null,pooled=null,poolKey='';
     self.onmessage=event=>{const message=event.data;
       try{
-        if(message.type==='source'){source=message;mask=null;pooled=null;maskKey='';poolKey='';return;}
+        if(message.type==='source'){source=message;mask=null;pooled=null;adjusted=null;preview=null;maskKey='';adjustmentKey='';poolKey='';return;}
         if(message.type!=='convert'||!source)return;
         const o=message.options,mk=o.removeWhite+':'+o.threshold;
         if(mk!==maskKey){mask=BeadCore.backgroundMask(source.data,source.width,source.height,o.removeWhite,o.threshold);maskKey=mk;poolKey='';}
-        const pk=mk+':'+o.crop+':'+o.longEdge+':'+o.coverage;
+        const ak=mk+':'+JSON.stringify(o.adjustments);
+        if(ak!==adjustmentKey){adjusted=BeadCore.adjustImage(source.data,o.adjustments,mask);preview=BeadCore.adjustmentPreview(adjusted,source.width,source.height);adjustmentKey=ak;}
+        const pk=ak+':'+o.crop+':'+o.longEdge+':'+o.coverage;
         if(pk!==poolKey){
           const bounds=o.crop?BeadCore.foregroundBounds(source.data,source.width,source.height,mask):null;
           const size=BeadCore.gridSize(bounds?.width||source.width,bounds?.height||source.height,o.longEdge);
-          pooled=BeadCore.averagePool(source.data,source.width,source.height,size.cols,size.rows,mask,bounds,o.coverage);poolKey=pk;
+          pooled=BeadCore.averagePool(adjusted,source.width,source.height,size.cols,size.rows,mask,bounds,o.coverage);poolKey=pk;
         }
         const result=BeadCore.reduceColors(BeadCore.mapPalette(pooled,message.colors),message.colors,o.maxColors);
         delete result.rgb;delete result.active;
-        self.postMessage({type:'result',job:message.job,result,paletteId:message.paletteId});
+        self.postMessage({type:'result',job:message.job,result,preview,paletteId:message.paletteId});
       }catch(error){self.postMessage({type:'error',job:message.job,message:error.message});}
     };
   }
   try{
     const url=URL.createObjectURL(new Blob([BeadCore.workerSource,'\n('+workerRuntime.toString()+')();'],{type:'text/javascript'}));
     state.worker=new Worker(url);URL.revokeObjectURL(url);
-    state.worker.onmessage=event=>{const m=event.data;if(m.job!==state.job)return;if(m.type==='error'){busy(false);$('statusText').textContent='生成失败';toast(m.message);return;}state.result=m.result;state.highlight=-1;busy(false);updateResults();};
+    state.worker.onmessage=event=>{const m=event.data;if(m.job!==state.job)return;if(m.type==='error'){busy(false);$('statusText').textContent='生成失败';toast(m.message);return;}acceptConversion(m.result,m.preview);};
     state.worker.onerror=()=>{busy(false);$('statusText').textContent='图片处理遇到问题';toast('图片处理失败，请重新打开页面后再试。');};
   }catch(error){state.worker=null;}
-  function options(){return {longEdge:+$('resolutionNumber').value,removeWhite:$('removeWhite').checked,threshold:255-+$('whiteTolerance').value,crop:$('cropWhite').checked,coverage:+$('coverage').value/100,maxColors:$('limitColors').checked?+$('maxColors').value:0};}
+  function options(){return {adjustments:adjustmentSettings(),longEdge:+$('resolutionNumber').value,removeWhite:$('removeWhite').checked,threshold:255-+$('whiteTolerance').value,crop:$('cropWhite').checked,coverage:+$('coverage').value/100,maxColors:$('limitColors').checked?+$('maxColors').value:0};}
   function mainThreadConvert(message){
     const d=state.sourceData,o=message.options,mask=BeadCore.backgroundMask(d.data,d.width,d.height,o.removeWhite,o.threshold);
     const bounds=o.crop?BeadCore.foregroundBounds(d.data,d.width,d.height,mask):null,size=BeadCore.gridSize(bounds?.width||d.width,bounds?.height||d.height,o.longEdge);
-    return BeadCore.reduceColors(BeadCore.mapPalette(BeadCore.averagePool(d.data,d.width,d.height,size.cols,size.rows,mask,bounds,o.coverage),message.colors),message.colors,o.maxColors);
+    const adjusted=BeadCore.adjustImage(d.data,o.adjustments,mask);
+    const result=BeadCore.reduceColors(BeadCore.mapPalette(BeadCore.averagePool(adjusted,d.width,d.height,size.cols,size.rows,mask,bounds,o.coverage),message.colors),message.colors,o.maxColors);
+    return {result,preview:BeadCore.adjustmentPreview(adjusted,d.width,d.height)};
   }
   function schedule(){
     if(!state.source)return;
@@ -220,12 +317,12 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
     state.timer=setTimeout(()=>{
       const message={type:'convert',job:state.job,paletteId:state.palette.id,colors:state.palette.colors,options:options()};
       if(state.worker)state.worker.postMessage(message);
-      else setTimeout(()=>{if(message.job!==state.job)return;try{state.result=mainThreadConvert(message);state.highlight=-1;busy(false);updateResults();}catch(e){busy(false);toast(e.message);}},20);
+      else setTimeout(()=>{if(message.job!==state.job)return;try{const converted=mainThreadConvert(message);acceptConversion(converted.result,converted.preview);}catch(e){busy(false);toast(e.message);}},20);
     },100);
   }
   function setSource(canvas,name){
     const data=canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,canvas.width,canvas.height);
-    state.source=canvas;state.sourceData=data;state.name=name;state.zoom=1;state.highlight=-1;
+    resetAdjustments(false);state.adjustedSource=null;state.source=canvas;state.sourceData=data;state.name=name;state.zoom=1;state.highlight=-1;
     $('fileName').textContent=name;$('sourceSize').textContent=canvas.width+' × '+canvas.height;
     if(state.worker)state.worker.postMessage({type:'source',width:data.width,height:data.height,data:data.data});
     schedule();
@@ -239,7 +336,7 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
       const image=new Image();image.src=url;await image.decode();if(ticket!==state.loading)return;
       if(image.naturalWidth*image.naturalHeight>16000000)throw new Error('图片超过 1600 万像素，请先缩小后上传。');
       const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;canvas.getContext('2d').drawImage(image,0,0);
-      setSource(canvas,file.name.replace(/\.[^.]+$/,''));toast('图片已载入，可调节格数和颜色数量。');
+      setSource(canvas,file.name.replace(/\.[^.]+$/,''));toast('图片已载入，可调整画面、格数和颜色数量。');
     }catch(e){toast(e.message.includes('像素')?e.message:'无法读取这张图片，请尝试 JPG 或 PNG。');}finally{URL.revokeObjectURL(url);$('fileInput').value='';}
   }
   function demo(){
@@ -281,7 +378,7 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
   function updateResults(){
     const r=state.result;$('gridDimensions').textContent=r.cols+' × '+r.rows+' 格';$('statGrid').innerHTML=r.cols+' <i>×</i> '+r.rows+' <em>格</em>';
     $('statTotal').innerHTML=fmt(r.total)+' <em>颗</em>';$('statColors').innerHTML=r.used+' <em>色</em>';updateSize();
-    $('paletteCount').textContent=state.palette.colors.length+' 可用色';$('stageTag').textContent=state.view==='original'?'上传的原图':state.palette.name;
+    $('paletteCount').textContent=state.palette.colors.length+' 可用色';$('stageTag').textContent=state.view==='original'?'上传的原图':state.view==='adjusted'?'调整后的图片':state.palette.name;
     $('materialBadge').textContent=r.used+' 色 · '+fmt(r.total)+' 颗';$('emptyNote').hidden=r.total>0;
     $('statusText').textContent=r.total?'图纸已生成 · '+r.cols+' × '+r.rows+' 格':'当前图片没有可拼的格子';
     $('mergeInfo').textContent=r.beforeUsed>r.used?'已从 '+r.beforeUsed+' 色合并为 '+r.used+' 色，图纸格数不变。':'当前使用 '+r.used+' 色，不超过设定上限。';
@@ -318,8 +415,9 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
   }
   function renderView(){
     if(!state.result||!state.source)return;const canvas=$('viewCanvas'),r=state.result;
-    if(state.view==='original'){
-      const scale=Math.min(1,2200/Math.max(state.source.width,state.source.height));const c=setupCanvas(canvas,Math.round(state.source.width*scale),Math.round(state.source.height*scale));c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=true;c.drawImage(state.source,0,0,canvas.width,canvas.height);state.geometry=null;
+    if(state.view==='original'||state.view==='adjusted'){
+      const image=state.view==='adjusted'?(state.adjustedSource||state.source):state.source;
+      const scale=Math.min(1,2200/Math.max(image.width,image.height));const c=setupCanvas(canvas,Math.round(image.width*scale),Math.round(image.height*scale));c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=true;c.drawImage(image,0,0,canvas.width,canvas.height);state.geometry=null;
     }else{
       const chart=state.view==='chart',cell=Math.max(10,Math.min(chart?26:16,Math.floor(4200/Math.max(r.cols,r.rows)))),margin=chart?Math.ceil(cell*1.45):0;
       const c=setupCanvas(canvas,r.cols*cell+margin*2,r.rows*cell+margin*2);c.fillStyle='#fffefa';c.fillRect(0,0,canvas.width,canvas.height);
@@ -327,8 +425,8 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
       drawCells(c,margin,margin,cell,chart,true);if(chart||$('showGrid').checked)drawGrid(c,margin,margin,r.cols,r.rows,cell,chart);
       state.geometry={x:margin,y:margin,cell};
     }
-    canvas.setAttribute('aria-label',state.view==='original'?'上传的原图':r.cols+' 列 '+r.rows+' 行拼豆'+(state.view==='chart'?'色号图纸':'色块预览'));
-    $('stageTag').textContent=state.view==='original'?'上传的原图':state.palette.name;fitView();
+    canvas.setAttribute('aria-label',state.view==='original'?'上传的原图':state.view==='adjusted'?'调整后的图片':r.cols+' 列 '+r.rows+' 行拼豆'+(state.view==='chart'?'色号图纸':'色块预览'));
+    $('stageTag').textContent=state.view==='original'?'上传的原图':state.view==='adjusted'?'调整后的图片':state.palette.name;fitView();
   }
   function fitView(){
     const canvas=$('viewCanvas'),stage=$('stage'),style=getComputedStyle(stage),w=stage.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),h=stage.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom);
@@ -360,14 +458,17 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
   });}
   function exportCsv(){return exportWith(()=>{const safe=v=>{let s=String(v);if(/^[=+@\-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};const rows=[['色卡体系','色号','颜色名称','HEX','R','G','B','豆子数量'],...usedColors().sort((a,b)=>b.count-a.count).map(c=>[state.palette.name,c.code,c.name,c.hex,...c.rgb,c.count])];downloadBlob(new Blob(['\uFEFF'+rows.map(row=>row.map(safe).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),filename('颜色用量表.csv'));});}
   function showDialog(content){$('dialogContent').innerHTML=content;$('infoDialog').showModal();}
-  function showHelp(){showDialog('<p class="eyebrow">HOW IT WORKS</p><h2>从一张图片开始</h2><ol><li>上传白底图片，或先用示例试一试。</li><li>调整长边豆子数，另一边按图片比例生成。每一格对应一颗豆子。</li><li>选择你实际使用的品牌色卡。需要少用几种颜色时，打开“限制用色数量”。</li><li>查看色块效果和色号图纸，分别下载预览、图纸、用量表。</li></ol><h3>分辨率和颜色数量，各控制什么？</h3><p>豆子数决定图纸有多少格，也决定固定豆子间距下的成品大小。颜色上限只合并相近颜色，保持格数和空白位置不变。原图颜色少于上限时，不会额外增加颜色。</p><h3>外围白底如何留空？</h3><p>从原图四周向内识别连通的近白背景，封闭区域内的白色仍保留。与外围白底连通的白色主体也可能被留空，可以降低容差或关闭留空。透明像素也视为留空。</p><h3>关于图片和文件</h3><p>图片只在当前浏览器中处理，不上传。支持 30 MB 以内、1600 万像素以内的 JPG、PNG、WebP 和 AVIF。长边支持 8–300 格；完整色号在放大图纸或导出的 PNG 中查看。</p>');}
-  function showSources(){showDialog('<p class="eyebrow">COLOR DATA & METHOD</p><h2>色卡与处理说明</h2><p>内置 '+palettes.length+' 套色卡。国内色卡及 Artkal C/M 来自 <a target="_blank" rel="noopener noreferrer" href="https://github.com/HansBug/pindou-color-data">HansBug/pindou-color-data</a>；Perler、Hama、Artkal S 来自 <a target="_blank" rel="noopener noreferrer" href="https://github.com/maxcleme/beadcolors">maxcleme/beadcolors</a>，均按 MIT 许可使用。</p><ul class="source-list">'+palettes.map(p=>'<li><a target="_blank" rel="noopener noreferrer" href="'+esc(p.source)+'">'+esc(p.name)+'</a>：'+p.colors.length+' 个可用色号</li>').join('')+'</ul><p>无法确认的色号及数据中明确标记为透明的颜色不参与自动匹配。公开整理的 RGB 值是屏幕参考值，并非所有品牌均有官方实物测色；色卡收录范围也不等于当前全量在售目录。特殊材质的效果无法用单个 RGB 表达。</p><h3>平均池化</h3><p>每格按原图覆盖面积，对 sRGB 的 R、G、B 通道分别求算术平均；边界像素按覆盖面积计权。白底参与均值计算。背景掩码只决定格子是否留空，默认主体覆盖面积至少 50% 才放豆子。随后按 RGB 欧氏距离匹配当前色卡。</p><h3>颜色融合</h3><p>先完成平均池化和色卡匹配，再按 CIELAB 颜色距离，反复合并最接近的两组颜色；中心颜色按豆子数量加权。每组最终选用该组中最接近中心的真实色号。每次调整都从当前原图重新计算，不在旧结果上累积丢失颜色。</p><p>数据整理日期：2026-10-28。原始数据链接、下载内容校验值随源代码一并提供。页面中的尺寸以所选孔间距估算，实际成品受拼板和熨烫影响。</p><details><summary>数据许可声明</summary><pre>'+esc(globalThis.BEAD_LICENSES||'Copyright (c) 2026 HansBug\nCopyright (c) 2020 maxcleme\nMIT License — see source repositories for complete license notices.')+'</pre></details>');}
+  function showHelp(){showDialog('<p class="eyebrow">HOW IT WORKS</p><h2>从一张图片开始</h2><ol><li>上传白底图片，或先用示例试一试。</li><li>按需要调节亮度、对比度、饱和度、色调和色温。切换“原图”与“调整后”比较效果，也可以一键重置。</li><li>调整长边豆子数，另一边按图片比例生成。每一格对应一颗豆子。</li><li>选择你实际使用的品牌色卡。需要少用几种颜色时，打开“限制用色数量”。</li><li>查看色块效果和色号图纸，分别下载预览、图纸、用量表。</li></ol><h3>图像调节</h3><p>调整作用于原始像素，然后再进行平均池化、色卡匹配和颜色融合。色调控制色相旋转，色温控制冷暖。每次调节都从原图重新计算，上传新图片时恢复默认参数。白底识别以原图为准，调节不会改变留空位置。</p><h3>分辨率和颜色数量，各控制什么？</h3><p>豆子数决定图纸有多少格，也决定固定豆子间距下的成品大小。颜色上限只合并相近颜色，保持格数和空白位置不变。原图颜色少于上限时，不会额外增加颜色。</p><h3>外围白底如何留空？</h3><p>从原图四周向内识别连通的近白背景，封闭区域内的白色仍保留。与外围白底连通的白色主体也可能被留空，可以降低容差或关闭留空。透明像素也视为留空。</p><h3>关于图片和文件</h3><p>图片只在当前浏览器中处理，不上传。支持 30 MB 以内、1600 万像素以内的 JPG、PNG、WebP 和 AVIF。长边支持 8–300 格；完整色号在放大图纸或导出的 PNG 中查看。</p>');}
+  function showSources(){showDialog('<p class="eyebrow">COLOR DATA & METHOD</p><h2>色卡与处理说明</h2><p>内置 '+palettes.length+' 套色卡。国内色卡及 Artkal C/M 来自 <a target="_blank" rel="noopener noreferrer" href="https://github.com/HansBug/pindou-color-data">HansBug/pindou-color-data</a>；Perler、Hama、Artkal S 来自 <a target="_blank" rel="noopener noreferrer" href="https://github.com/maxcleme/beadcolors">maxcleme/beadcolors</a>，均按 MIT 许可使用。</p><ul class="source-list">'+palettes.map(p=>'<li><a target="_blank" rel="noopener noreferrer" href="'+esc(p.source)+'">'+esc(p.name)+'</a>：'+p.colors.length+' 个可用色号</li>').join('')+'</ul><p>无法确认的色号及数据中明确标记为透明的颜色不参与自动匹配。公开整理的 RGB 值是屏幕参考值，并非所有品牌均有官方实物测色；色卡收录范围也不等于当前全量在售目录。特殊材质的效果无法用单个 RGB 表达。</p><h3>图像调节</h3><p>先基于原图识别背景，再对主体像素调整亮度、对比度、色温、色调和饱和度。背景掩码保持不变，透明度保持不变。所有参数为零时直接使用原始像素。原图保留用于对照，调整结果用于全部图纸与用量导出。</p><h3>平均池化</h3><p>每格按图像覆盖面积，对 sRGB 的 R、G、B 通道分别求算术平均；边界像素按覆盖面积计权。白底参与均值计算。背景掩码只决定格子是否留空，默认主体覆盖面积至少 50% 才放豆子。随后按 RGB 欧氏距离匹配当前色卡。</p><h3>颜色融合</h3><p>先完成平均池化和色卡匹配，再按 CIELAB 颜色距离，反复合并最接近的两组颜色；中心颜色按豆子数量加权。每组最终选用该组中最接近中心的真实色号。每次调整都从当前原图重新计算，不在旧结果上累积丢失颜色。</p><p>数据整理日期：2026-10-28。原始数据链接、下载内容校验值随源代码一并提供。页面中的尺寸以所选孔间距估算，实际成品受拼板和熨烫影响。</p><details><summary>数据许可声明</summary><pre>'+esc(globalThis.BEAD_LICENSES||'Copyright (c) 2026 HansBug\nCopyright (c) 2020 maxcleme\nMIT License — see source repositories for complete license notices.')+'</pre></details>');}
   $('uploadZone').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',e=>loadFile(e.target.files[0]));
   ['dragenter','dragover'].forEach(type=>$('uploadZone').addEventListener(type,e=>{e.preventDefault();$('uploadZone').classList.add('dragging');}));
   ['dragleave','drop'].forEach(type=>$('uploadZone').addEventListener(type,e=>{e.preventDefault();$('uploadZone').classList.remove('dragging');if(type==='drop')loadFile(e.dataTransfer.files[0]);}));
   window.addEventListener('dragover',e=>e.preventDefault());window.addEventListener('drop',e=>e.preventDefault());
   document.addEventListener('paste',e=>{const item=Array.from(e.clipboardData?.items||[]).find(x=>x.type.startsWith('image/'));if(item)loadFile(item.getAsFile());});
   $('demoBtn').addEventListener('click',demo);
+  for(const id of adjustmentIds)$('adj-'+id).addEventListener('input',()=>{updateAdjustmentLabels();schedule();});
+  $('resetAdjustments').addEventListener('click',()=>resetAdjustments());
+  $('viewAdjustments').addEventListener('click',()=>{setView('adjusted');document.querySelector('.result-area').scrollIntoView({behavior:'smooth',block:'nearest'});});
   function resolution(value){const n=Math.max(8,Math.min(300,Math.round(+value||80)));$('resolution').value=n;$('resolutionNumber').value=n;rangeFill($('resolution'));document.querySelectorAll('[data-size]').forEach(b=>b.classList.toggle('selected',+b.dataset.size===n));schedule();}
   $('resolution').addEventListener('input',e=>resolution(e.target.value));$('resolutionNumber').addEventListener('change',e=>resolution(e.target.value));document.querySelectorAll('[data-size]').forEach(b=>b.addEventListener('click',()=>resolution(b.dataset.size)));
   $('paletteSelect').addEventListener('change',()=>{state.palette=palettes.find(p=>p.id===$('paletteSelect').value);$('beadSize').value=String(state.palette.mm);schedule();});
@@ -382,11 +483,11 @@ globalThis.BEAD_LICENSES = "HansBug/pindou-color-data\nMIT License\n\nCopyright 
   let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(fitView,100);});
   $('viewCanvas').addEventListener('pointermove',event=>{if(!state.geometry||!state.result)return;const rect=$('viewCanvas').getBoundingClientRect(),g=state.geometry,x=(event.clientX-rect.left)/rect.width*$('viewCanvas').width,y=(event.clientY-rect.top)/rect.height*$('viewCanvas').height,col=Math.floor((x-g.x)/g.cell),row=Math.floor((y-g.y)/g.cell),r=state.result;if(col<0||row<0||col>=r.cols||row>=r.rows)return;const index=r.cells[row*r.cols+col];$('hoverText').textContent='第 '+(row+1)+' 行 · 第 '+(col+1)+' 列  /  '+(index<0?'空白，不放豆子':state.palette.colors[index].code);});
   $('viewCanvas').addEventListener('pointerleave',()=>$('hoverText').textContent='移动到色块，查看坐标与色号');
-  $('materialCards').addEventListener('click',event=>{const button=event.target.closest('[data-color]');if(!button||state.pending)return;state.highlight=state.highlight===+button.dataset.color?-1:+button.dataset.color;$('clearHighlight').hidden=state.highlight<0;if(state.view==='original')setView('preview');else renderView();renderMaterials();});
+  $('materialCards').addEventListener('click',event=>{const button=event.target.closest('[data-color]');if(!button||state.pending)return;state.highlight=state.highlight===+button.dataset.color?-1:+button.dataset.color;$('clearHighlight').hidden=state.highlight<0;if(state.view==='original'||state.view==='adjusted')setView('preview');else renderView();renderMaterials();});
   $('clearHighlight').addEventListener('click',()=>{state.highlight=-1;$('clearHighlight').hidden=true;renderView();renderMaterials();});$('materialSort').addEventListener('change',renderMaterials);
   $('exportPreview').addEventListener('click',exportPreview);$('exportChart').addEventListener('click',exportChart);$('exportMaterials').addEventListener('click',exportMaterials);$('exportCsv').addEventListener('click',exportCsv);
   $('helpBtn').addEventListener('click',showHelp);$('sourcesBtn').addEventListener('click',showSources);$('closeDialog').addEventListener('click',()=>$('infoDialog').close());$('infoDialog').addEventListener('click',event=>{if(event.target===$('infoDialog')){const r=$('infoDialog').getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)$('infoDialog').close();}});
-  document.querySelectorAll('input[type=range]').forEach(rangeFill);busy(true);demo();
+  document.querySelectorAll('input[type=range]').forEach(rangeFill);updateAdjustmentLabels();busy(true);demo();
 })();
 </script>
 </body></html>
