@@ -96,13 +96,6 @@
 
 白底参与平均池化；背景识别用于判断格子是否留空。默认主体覆盖至少一格的 50% 才放置豆子，此比例可调整。
 
-## 部署到 GitHub Pages
-
-将 `index.html` 放在仓库根目录，然后设置：
-
-**Settings → Pages → Deploy from a branch → main → /(root) → Save**
-
-发布完成后，即可通过 GitHub Pages 提供的网址使用。
 
 ## 色卡数据来源
 
