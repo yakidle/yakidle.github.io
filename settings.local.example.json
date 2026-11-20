@@ -1,0 +1,11 @@
+{
+  "gpt_root": "D:\\GPT-SoVITS",
+  "admin_key": "REPLACE_WITH_A_RANDOM_PRIVATE_32_PLUS_CHARACTER_SECRET",
+  "listener_key": "REPLACE_WITH_A_DIFFERENT_RANDOM_PRIVATE_SECRET",
+  "sovits_url": "http://127.0.0.1:9880",
+  "allowed_origins": [
+    "http://127.0.0.1:7865",
+    "http://localhost:7865",
+    "https://yakidle.github.io"
+  ]
+}
