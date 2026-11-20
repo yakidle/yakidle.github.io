@@ -1,0 +1,50 @@
+小鱼爱可可：GPT-SoVITS 声音接入更新包（2026-11-20）
+
+【这是补丁包，不需要重新部署整个网站】
+只替换以下文件：
+- server/gateway.py
+- scripts/run_model.ps1
+- scripts/start_windows.ps1
+- docs/stories/index.html
+- settings.local.example.json（示例，非你的私人配置）
+- tests/test_gateway.py（测试，不是运行必需）
+
+不要覆盖你已有的 settings.local.json、data/，也不要修改 docs/beads/ 或 docs/story-archive/。
+
+【已经固定好的参数】
+- GPT-SoVITS：默认 v2ProPlus（你之前在 WebUI 中使用的版本；如果最终改用 v4，在本机 settings.local.json 中将 model_version 改为 v4）
+- 语速：1.05
+- 句间停顿：0.4 秒
+- top_k：35
+- top_p：0.7
+- temperature：0.7
+- 切分：凑四句一切（API 的 cut1）
+以上参数由本机后端调用 API 时设置，绝不需要上传到官方推理 WebUI。
+
+【部署顺序】
+1. 在 GitHub Desktop 里点击 Repository -> Show in Explorer，进入本地 yakidle.github.io 仓库。
+2. 解压本包，复制补丁文件到仓库根目录下的同名路径；提示覆盖时确认。
+3. 如果有任何正在运行的旧版小鱼网站（7865），先关掉它的命令行窗口。
+4. 在 http://localhost:9874 中关闭 TTS 推理 WebUI（9872）。你可以保留 9874 主页面，但不要再让 9872 模型占用显存。
+5. 从网站仓库根目录运行 START_WINDOWS.bat；首次输入 GPT-SoVITS 安装目录，必须是有 runtime/python.exe 与 api_v2.py 的那个目录。会生成私人 settings.local.json（密钥不要传给别人）。
+6. 浏览器访问 http://127.0.0.1:7865/admin/ ，从本地 settings.local.json 找 admin_key 登录；在“保存小鱼的声音”上传原始的 9 秒清晰参考音频（WAV、MP3 或 FLAC）并填入与录音逐字一致的参考文字，点击保存。
+7. 访问 http://127.0.0.1:7865/stories/，点“我想听这个”，填写 listener_key，输入中文并点击生成。确认正常生成后，再连接 GitHub Pages 外网。
+8. GitHub Desktop 对补丁代码做 Commit + Push，让公开站点加载修改后的默认语速。千万不要提交本机私人配置 settings.local.json 或 data/。
+9. 后续通过 START_TUNNEL.bat 使用 Cloudflare Tunnel，把所得 HTTPS 地址填入 docs/site-config.js 的 apiBase，Commit + Push，GitHub Pages 才能使用你本机 API。临时 Tunnel URL 每次启动可能改变。
+
+【现有配置注意】
+如果 settings.local.json 以前已经生成，旧密钥继续有效。run_model.ps1 默认 model_version = v2ProPlus，不需要重置私人配置。如果希望另选版本，手动在 JSON 增加 "model_version": "v4"（或 v2ProPlus）。
+若旧 settings.local.json 没有 tts_options 字段，gateway.py 会自动使用本次参数。你也可以加上：
+"tts_options": {"speed":1.05,"fragment_interval":0.4,"top_k":35,"top_p":0.7,"temperature":0.7,"text_split_method":"cut1"}
+不会修改官方 GPT-SoVITS 的 tts_infer.yaml，而是在网站 data/ 下创建独立的 keke_tts_infer.yaml。模型会读取官方配置中所选版本的预设，并确保指向相应底模；不要同时运行两个独立的 GPU 推理进程。
+
+【关于当前实际模型】
+你此前的 GPT 模型是 v3 底模，SoVITS 是 v2ProPlus 底模。若你后来切换到 V4 并认为效果更好，把私人配置 model_version 改为 v4。不要把模型版本和发音参数混为一谈。
+
+【隐私】
+- 原声音样本与密钥仅保存在本机 data/、settings.local.json；不得提交到 GitHub。
+- “随便听听”的真人故事一经发布到 GitHub Pages，就是公网资源，不要上传不希望公开的私人录音。
+- 在将本地网关暴露到公网前，保留管理员/听众独立口令和 API 限流。仅共享 listener_key，不要共享 admin_key。
+
+【验证】
+你电脑上的 GPU 模型实际运行需要你自己测试；此处只能验证站点和模拟 API 的调用关系，不代表真实 GPU 已跑通。

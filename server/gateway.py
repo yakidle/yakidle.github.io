@@ -436,7 +436,7 @@ class Handler(BaseHTTPRequestHandler):
             text = request.get('text', '')
             if not isinstance(text, str) or not 1 <= len(text.strip()) <= MAX_TEXT:
                 raise ValueError(f'请输入 1–{MAX_TEXT} 字的中文文字。')
-            speed = request.get('speed', 1.0)
+            speed = request.get('speed', SETTINGS['tts_options']['speed'])
             if isinstance(speed, bool) or not isinstance(speed, (int, float)) or not 0.75 <= speed <= 1.25:
                 raise ValueError('语速应为 0.75–1.25。')
             voice = voice_info()

@@ -7,5 +7,14 @@
     "http://127.0.0.1:7865",
     "http://localhost:7865",
     "https://yakidle.github.io"
-  ]
+  ],
+  "model_version": "v2ProPlus",
+  "tts_options": {
+    "speed": 1.05,
+    "fragment_interval": 0.4,
+    "top_k": 35,
+    "top_p": 0.7,
+    "temperature": 0.7,
+    "text_split_method": "cut1"
+  }
 }

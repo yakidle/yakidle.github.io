@@ -64,6 +64,7 @@ class GatewayTest(unittest.TestCase):
         def fake_call(text, speed, voice):
             cls.model_calls.append((text, speed))
             return audio_wav(1)
+        cls.original_call_model = cls.mod.call_model
         cls.mod.call_model = fake_call
         cls.srv = ThreadingHTTPServer(('127.0.0.1', 0), cls.mod.Handler)
         cls.thread = threading.Thread(target=cls.srv.serve_forever, daemon=True)
@@ -107,6 +108,30 @@ class GatewayTest(unittest.TestCase):
         self.assertTrue(raw.startswith(b'RIFF'))
         self.assertGreater(len(self.model_calls), 1)
         self.assertEqual(headers['Content-Type'], 'audio/wav')
+
+    def test_02b_current_voice_parameters(self):
+        from unittest.mock import patch
+        mod = self.mod
+        self.assertEqual(mod.SETTINGS['tts_options']['speed'], 1.05)
+        self.assertEqual(mod.SETTINGS['tts_options']['text_split_method'], 'cut1')
+        self.assertEqual(mod.SETTINGS['tts_options']['top_k'], 35)
+        captured = {}
+        class FakeResponse:
+            headers = {'Content-Type': 'audio/wav'}
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self, limit): return audio_wav(1)
+        def capture(req, timeout=0):
+            captured.update(json.loads(req.data))
+            return FakeResponse()
+        with patch.object(mod, 'urlopen', side_effect=capture):
+            type(self).original_call_model('可可，听故事。', 1.05, {'file': 'voice.wav', 'prompt_text': '我想给你讲故事。'})
+        self.assertEqual(captured['speed_factor'], 1.05)
+        self.assertEqual(captured['fragment_interval'], 0.4)
+        self.assertEqual(captured['top_k'], 35)
+        self.assertEqual(captured['top_p'], 0.7)
+        self.assertEqual(captured['temperature'], 0.7)
+        self.assertEqual(captured['text_split_method'], 'cut1')
 
     def test_03_story_create_edit_remove(self):
         body, h = multipart({'title': '小鱼录的故事', 'description': '给可可的故事'}, 'audio', 'record.mp3', b'ID3' + b'\0' * 512)

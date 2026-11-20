@@ -1,0 +1,20 @@
+﻿{
+    "gpt_root":  "D:\\yqt\\github\\GPT-SoVITS\\GPT-SoVITS-v2pro-20250604",
+    "admin_key":  "20c6246bb9db64b0b6b5bc867193364e53f82a6746a09ee8",
+    "listener_key":  "xiaoyuwoxiangnile",
+    "sovits_url":  "http://127.0.0.1:9880",
+    "model_version":  "v2ProPlus",
+    "tts_options":  {
+                        "speed":  1.05,
+                        "fragment_interval":  0.4,
+                        "top_k":  35,
+                        "top_p":  0.7,
+                        "temperature":  0.7,
+                        "text_split_method":  "cut1"
+                    },
+    "allowed_origins":  [
+                            "http://127.0.0.1:7865",
+                            "http://localhost:7865",
+                            "https://yakidle.github.io"
+                        ]
+}

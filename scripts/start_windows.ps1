@@ -24,6 +24,8 @@ if (-not (Test-Path -LiteralPath $config)) {
     admin_key = $admin
     listener_key = $listener
     sovits_url = 'http://127.0.0.1:9880'
+    model_version = 'v2ProPlus'
+    tts_options = [ordered]@{ speed = 1.05; fragment_interval = 0.4; top_k = 35; top_p = 0.7; temperature = 0.7; text_split_method = 'cut1' }
     allowed_origins = @('http://127.0.0.1:7865', 'http://localhost:7865', 'https://yakidle.github.io')
   }
   $settings | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $config -Encoding UTF8
@@ -41,6 +43,15 @@ Write-Host 'LISTENER code: only share with Keke (for generating new audio):' -Fo
 Write-Host ([string]$s.listener_key) -ForegroundColor Green
 Write-Host ''
 
+$ttsBrowser = $null
+try { $ttsBrowser = New-Object System.Net.Sockets.TcpClient('127.0.0.1', 9872) } catch {}
+if ($ttsBrowser) {
+  $ttsBrowser.Close()
+  Write-Host 'IMPORTANT: GPT-SoVITS Gradio TTS WebUI on port 9872 is still running.' -ForegroundColor Yellow
+  Write-Host 'Close TTS Inference WebUI in localhost:9874 first; 8GB VRAM may be insufficient for TWO copies of the model.' -ForegroundColor Yellow
+  Write-Host 'After closing it, start this script again.' -ForegroundColor Yellow
+  throw 'Port 9872 is still in use; close TTS inference to free GPU memory.'
+}
 foreach ($pair in @(@(9880,'run_model.ps1'), @(7865,'run_web.ps1'))) {
   $port = [int]$pair[0]
   $scriptName = [string]$pair[1]
