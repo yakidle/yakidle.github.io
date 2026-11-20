@@ -21,12 +21,17 @@
 @media(max-width:650px){.result-toolbar{flex-wrap:wrap}.result-toolbar .tabs{flex:1}.result-toolbar .tabs button{flex:1;padding:8px 10px}.view-tools{margin-left:auto}.adjustment-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}.adjustment-control:last-child{grid-column:1/-1}.adjustment-control .range-labels{font-size:9px}.adjustment-hint{font-size:10px}}
 
 @media(max-width:650px){.brand-caption{display:none}}
+
+/* 小鱼爱可可整合导航：仅追加返回入口，不改拼豆工作台功能 */
+.home-back-link{display:inline-flex;align-items:center;justify-content:center;min-height:35px;padding:8px 11px;background:#f8faf5;border:1px solid #dce5d9;border-radius:8px;text-decoration:none;color:#617b66;font-size:11px;white-space:nowrap}
+.home-back-link:hover{background:#edf3e9;color:#34543d}
+@media(max-width:650px){.header-end{gap:10px}.home-back-link{font-size:10px;padding:7px 8px;min-height:33px}}
 </style>
 </head>
 <body>
 <header class="topbar">
   <a class="brand" href="#" aria-label="可可爱拼豆首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>可可爱拼豆<span class="brand-dot">.</span></span><span class="brand-caption">拼豆图纸工作台</span></a>
-  <div class="header-end"><span class="local-badge"><i></i> 图片仅在本机处理</span><button id="helpBtn" class="text-button">使用说明 <span aria-hidden="true">↗</span></button></div>
+  <div class="header-end"><span class="local-badge"><i></i> 图片仅在本机处理</span><a href="../" class="home-back-link" aria-label="返回小鱼爱可可首页">← 返回小鱼爱可可</a><button id="helpBtn" class="text-button">使用说明 <span aria-hidden="true">↗</span></button></div>
 </header>
 <main>
   <div class="intro"><div><p class="eyebrow">A LITTLE PIXEL, A LITTLE JOY</p><h1>把喜欢的图片，<span>一格格拼出来。</span></h1><p class="subtitle">选一张图，定一个尺寸。让每一格颜色，都有对应的豆子。</p></div><div class="intro-tag"><span class="tiny-grid" aria-hidden="true">▦</span><span>从图片到图纸<br><b>每一格，刚刚好</b></span></div></div>

@@ -61,6 +61,22 @@ def read_settings():
     if parts.scheme != 'http' or parts.hostname not in ('127.0.0.1', 'localhost') or parts.path not in ('', '/') or parts.query or parts.fragment or parts.username or parts.password:
         raise SystemExit('sovits_url 只能配置为本机 HTTP 地址，如 http://127.0.0.1:9880。')
     cfg['sovits_url'] = url.rstrip('/')
+    # Personal inference defaults. Only private settings.local.json may override these.
+    defaults = {'speed': 1.05, 'fragment_interval': 0.4,
+                'top_k': 35, 'top_p': 0.7, 'temperature': 0.7,
+                'text_split_method': 'cut1'}
+    supplied = cfg.get('tts_options', {})
+    if not isinstance(supplied, dict):
+        raise SystemExit('tts_options 必须是 JSON 对象。')
+    options = {**defaults, **supplied}
+    if (type(options['top_k']) is not int or not 1 <= options['top_k'] <= 100 or
+        type(options['top_p']) not in (int, float) or not 0 < options['top_p'] <= 1 or
+        type(options['temperature']) not in (int, float) or not 0.1 <= options['temperature'] <= 2 or
+        type(options['fragment_interval']) not in (int, float) or not 0 <= options['fragment_interval'] <= 3 or
+        type(options['speed']) not in (int, float) or not 0.75 <= options['speed'] <= 1.25 or
+        options['text_split_method'] not in ('cut0', 'cut1', 'cut2', 'cut3', 'cut4', 'cut5')):
+        raise SystemExit('tts_options 参数不合法，请检查本地配置。')
+    cfg['tts_options'] = options
     return cfg
 
 
@@ -194,7 +210,12 @@ def split_text(text, limit=270):
 def call_model(text, speed, voice):
     payload = {
         'text': text, 'text_lang': 'zh', 'ref_audio_path': str((DATA / voice['file']).resolve()),
-        'prompt_text': voice['prompt_text'], 'prompt_lang': 'zh', 'text_split_method': 'cut5',
+        'prompt_text': voice['prompt_text'], 'prompt_lang': 'zh',
+        'text_split_method': SETTINGS['tts_options']['text_split_method'],
+        'top_k': SETTINGS['tts_options']['top_k'],
+        'top_p': SETTINGS['tts_options']['top_p'],
+        'temperature': SETTINGS['tts_options']['temperature'],
+        'fragment_interval': SETTINGS['tts_options']['fragment_interval'],
         'batch_size': 1, 'speed_factor': speed, 'streaming_mode': False, 'media_type': 'wav',
         'parallel_infer': False, 'use_cuda_graph': False,
     }

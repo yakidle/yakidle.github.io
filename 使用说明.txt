@@ -1,0 +1,20 @@
+小鱼爱可可 · 手机白屏修复及导航统一更新包
+
+修复内容：
+1. docs/stories/index.html：补全故事页面缺失的页面主体，修复移动端空白页面。
+2. docs/stories/index.html：将页头改为“可可听故事”，右上角增加“← 返回小鱼爱可可”，移除页面里重复的大标题。
+3. docs/beads/index.html：仅在现有页头右上角增加同样的返回首页入口。拼豆处理算法、色卡和导出功能不变。
+
+使用方法：
+1. 在 GitHub Desktop 中选中 yakidle.github.io，点 Repository → Show in Explorer。
+2. 打开本 ZIP，解压后将里面的 docs 文件夹复制进仓库根目录（和仓库中的 docs 合并），提示时选择替换同名文件。
+3. 回到 GitHub Desktop，应看到 docs/stories/index.html 和 docs/beads/index.html 两个变更。检查仅这两个文件被勾选。
+4. Summary 输入：Fix mobile stories page and unify navigation。点击 Commit 2 files to main，随后点击 Push origin。
+5. GitHub Pages 的 Actions 部署显示成功后，手机重新打开 https://yakidle.github.io/stories/ 。如仍为旧页面，退出旧标签页重新打开或使用隐私模式。
+6. 测试右上角的“返回小鱼爱可可”、故事播放页和拼豆图纸生成。
+
+注意：
+- 这里没有修改声音模型、私人录音、API 密钥或故事目录，不需要重新录音和训练。
+- 没有包含 settings.local.json、data 等私人数据，不要将这些内容推送到公开仓库。
+- 另外检查仓库 docs/site-config.js 中 API 地址末尾是否多余空格；如有，应去掉最后 .com 后面的空格再提交。例如：apiBase: 'https://xxx.trycloudflare.com'。
+- 临时 Cloudflare Tunnel 地址重启后可能改变；公网声音合成需要本地模型和 Tunnel 都保持运行。
