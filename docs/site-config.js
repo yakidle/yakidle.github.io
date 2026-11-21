@@ -3,4 +3,4 @@
  * pointing to your Windows machine, e.g. https://voice.example.com .
  * Quick Tunnel URLs can also be used but change after restarting the tunnel.
  */
-window.XIAOYU_CONFIG = { apiBase: 'https://representation-hose-cardiovascular-testimony.trycloudflare.com' };
+window.XIAOYU_CONFIG = { apiBase: 'https://yqteng.tailccc923.ts.net' };
